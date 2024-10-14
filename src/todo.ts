@@ -6,60 +6,77 @@ type statusType = "not-started" | "in-progress" |"completed"
   dateStart: number;
   dateEnd?: number;
   status: statusType;
+  getTodo: () =>  object
 }
 
 
 module.exports = class Todo implements ITodo  { 
-     readonly  _id: string;
-   private  _dateStart: number;  
-   private _dateEnd: number;
-   private _title: string; 
-   private _status: statusType;
+   readonly  _id: string;
+    #dateStart: number;  
+    #dateEnd: number;
+    #title: string; 
+    #status: statusType;
 
    constructor() { 
        this._id = crypto.randomUUID(); 
-       this._title = '';
-       this._dateStart = Date.now()
-       this._dateEnd = Date.now()
-       this._status = "not-started";
+       this.#title = '';
+       this.#dateStart = Date.now()
+       this.#dateEnd = Date.now()
+       this.#status = "not-started";
+       console.log(this.title)
    }
-
-
-   set title(title: string) { 
       
-       this._title = title;
+
+
+    set title(title: string) { 
+      
+       this.#title = title;
    }
 
    get title(): string { 
-       return this._title;
+       return this.#title;
    }
 
    set dateStart(date: number) { 
-       this._dateStart = date;
+       this.#dateStart = date;
    }
 
    get dateStart(): number { 
-       return this._dateStart;
+       return this.#dateStart;
    }
 
  
    set dateEnd(date: number) { 
-       this._dateEnd = date;
+       this.#dateEnd = date;
    }
 
    get dateEnd(): number { 
-       return this._dateEnd;
+       return this.#dateEnd;
    }
 
   
    set status(status: statusType) { 
-       this._status = status;
+       this.#status = status;
    }
 
    get status(): statusType { 
-       return this._status;
+       return this.#status;
    }
-}
+   
+   
+   
+   
+   public getTodo() {
+    return {
+      _id: this._id,
+      title: this.#title,
+      dateStart: this.#dateStart,
+      dateEnd: this.#dateEnd,
+      status: this.#status,
+    };
+
+}}
+
 
 
 

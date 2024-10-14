@@ -3,19 +3,36 @@ var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const UserInputHandler = require("./user-input-handler");
+const Todo = require("./todo");
 module.exports = (_a = class FileManager {
-        static loadTodos() {
-            try {
-                const todosJson = fs.readFileSync(this._filePath, { encoding: "utf-8" });
-                const todosParsed = JSON.parse(todosJson);
-                return todosParsed;
+        static isExistingFile(filePath) {
+            if (fs.existsSync(filePath)) {
+                return true;
             }
-            catch (err) {
-                console.log("error while loading todos");
+            else {
+                return false;
+            }
+        }
+        static loadTodos() {
+            if (this.isExistingFile(this._filePath)) {
+                try {
+                    const todosJson = fs.readFileSync(this._filePath, { encoding: "utf-8" });
+                    const todosParsed = JSON.parse(todosJson);
+                    const todos = todosParsed.map((todo) => {
+                        return Object.assign(new Todo(), todo);
+                    });
+                    return todos;
+                }
+                catch (err) {
+                    return [];
+                }
+            }
+            else {
                 return [];
             }
         }
         static saveTodos(todos) {
+            console.log(todos);
             fs.writeFile(this._filePath, JSON.stringify(todos), (err) => {
                 if (err) {
                     console.error('An error occurred while writing to the file:', err);

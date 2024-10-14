@@ -9,8 +9,9 @@ const { Todo, ITodo } = require("./todo");
 
 
 const t = new TodoList()
-t.createTodo()
 
+// t.createTodo()
+t.displayTodos()
 
 
 

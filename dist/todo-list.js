@@ -19,14 +19,18 @@ module.exports = class TodoList {
     createTodo() {
         return __awaiter(this, void 0, void 0, function* () {
             const todo = new Todo();
+            // todo.status="completed"
             todo.title = yield UserInputHandler.question("Task title : ");
             todo.dateStart = yield UserInputHandler.question("Task starts at : ");
             todo.dateEnd = yield UserInputHandler.question("Task ends at : ");
             todo.status = yield UserInputHandler.question("Task status : ");
             this.todos.push(todo);
-            FileManager.saveTodos(this.todos);
+            FileManager.saveTodos((this.todos.map(t => t.getTodo())));
             UserInputHandler.close();
         });
+    }
+    displayTodos() {
+        console.log(this.todos[0].getTodo());
     }
     removeTodo(title) {
         this.todos = this.todos.filter(todo => todo.title !== title);
