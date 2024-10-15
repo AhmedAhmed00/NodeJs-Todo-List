@@ -16,28 +16,54 @@ module.exports = class TodoList {
     constructor() {
         this.todos = FileManager.loadTodos();
     }
-    createTodo() {
+    getTodoDateFromUser(todo) {
         return __awaiter(this, void 0, void 0, function* () {
-            const todo = new Todo();
-            // todo.status="completed"
             todo.title = yield UserInputHandler.question("Task title : ");
             todo.dateStart = yield UserInputHandler.question("Task starts at : ");
             todo.dateEnd = yield UserInputHandler.question("Task ends at : ");
             todo.status = yield UserInputHandler.question("Task status : ");
-            this.todos.push(todo);
-            FileManager.saveTodos((this.todos.map(t => t.getTodo())));
-            UserInputHandler.close();
+            return todo;
         });
     }
-    displayTodos() {
-        console.log(this.todos[0].getTodo());
+    createTodo() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const todo = new Todo();
+            const todoData = yield this.getTodoDateFromUser(todo);
+            todoData.id = this.todos.length;
+            this.todos.push(todoData);
+            FileManager.saveTodos(this.todos.map((t) => t.getTodo()));
+        });
     }
-    removeTodo(title) {
-        this.todos = this.todos.filter(todo => todo.title !== title);
-        FileManager.saveTodos(this.todos);
+    updateTodo(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const index = this.todos.findIndex((todo) => todo.id === id);
+            if (index !== -1) {
+                const updatedData = yield this.getTodoDateFromUser(this.todos[index]);
+                this.todos[index] = updatedData;
+                FileManager.saveTodos(this.todos.map((t) => t.getTodo()));
+            }
+            else {
+                console.log("Todo not found");
+            }
+        });
+    }
+    deleteTodo(id) {
+        const index = this.todos.findIndex((todo) => todo.id === id);
+        if (index !== -1) {
+            this.todos.splice(index, 1);
+            FileManager.saveTodos(this.todos.map((t) => t.getTodo()));
+        }
+        else {
+            console.log("not Found");
+        }
+    }
+    displayTodos() {
+        this.todos.forEach((todo) => {
+            console.log(todo.getTodo());
+        });
     }
     removeAllTodos() {
-        this.todos = [];
+        this.todos.length = 0;
         FileManager.saveTodos([]);
     }
 };

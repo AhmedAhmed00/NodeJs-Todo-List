@@ -10,20 +10,32 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Todo_dateStart, _Todo_dateEnd, _Todo_title, _Todo_status, _a;
+var _Todo__id, _Todo_dateStart, _Todo_dateEnd, _Todo_title, _Todo_status, _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 module.exports = (_a = class Todo {
-        constructor() {
+        constructor(title, dateStart, dateEnd, status, id) {
+            _Todo__id.set(this, void 0);
             _Todo_dateStart.set(this, void 0);
             _Todo_dateEnd.set(this, void 0);
             _Todo_title.set(this, void 0);
             _Todo_status.set(this, void 0);
-            this._id = crypto.randomUUID();
-            __classPrivateFieldSet(this, _Todo_title, '', "f");
-            __classPrivateFieldSet(this, _Todo_dateStart, Date.now(), "f");
-            __classPrivateFieldSet(this, _Todo_dateEnd, Date.now(), "f");
-            __classPrivateFieldSet(this, _Todo_status, "not-started", "f");
-            console.log(this.title);
+            __classPrivateFieldSet(this, _Todo__id, id, "f");
+            __classPrivateFieldSet(this, _Todo_title, title, "f");
+            __classPrivateFieldSet(this, _Todo_dateStart, dateStart, "f");
+            __classPrivateFieldSet(this, _Todo_dateEnd, dateEnd, "f");
+            __classPrivateFieldSet(this, _Todo_status, status, "f");
+        }
+        get id() {
+            return __classPrivateFieldGet(this, _Todo__id, "f");
+        }
+        set id(id) {
+            __classPrivateFieldSet(this, _Todo__id, id, "f");
+        }
+        markAsComplated() {
+            this.status = "completed";
+        }
+        markAsInProgress() {
+            this.status = "in-progress";
         }
         set title(title) {
             __classPrivateFieldSet(this, _Todo_title, title, "f");
@@ -51,7 +63,7 @@ module.exports = (_a = class Todo {
         }
         getTodo() {
             return {
-                _id: this._id,
+                _id: __classPrivateFieldGet(this, _Todo__id, "f"),
                 title: __classPrivateFieldGet(this, _Todo_title, "f"),
                 dateStart: __classPrivateFieldGet(this, _Todo_dateStart, "f"),
                 dateEnd: __classPrivateFieldGet(this, _Todo_dateEnd, "f"),
@@ -59,8 +71,10 @@ module.exports = (_a = class Todo {
             };
         }
     },
+    _Todo__id = new WeakMap(),
     _Todo_dateStart = new WeakMap(),
     _Todo_dateEnd = new WeakMap(),
     _Todo_title = new WeakMap(),
     _Todo_status = new WeakMap(),
+    _a.idCounter = 1,
     _a);

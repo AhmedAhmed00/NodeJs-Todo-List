@@ -1,55 +1,42 @@
 import { ITodo } from "./todo";
-const fs = require("fs")
-const UserInputHandler = require("./user-input-handler")
-const Todo  = require("./todo")
 
+const fs = require("fs");
+const UserInputHandler = require("./user-input-handler");
+const Todo = require("./todo");
 
 module.exports = class FileManager {
-     private  static  _filePath = "todos.json"
-     static isExistingFile(filePath:string):boolean{ 
-      if (fs.existsSync(filePath)){ 
-       return true
+  private static _filePath = "todos.json";
+  static isExistingFile(filePath: string): boolean {
+    return fs.existsSync(filePath);
+  }
+
+  static loadTodos(): ITodo[] {
+    if (this.isExistingFile(this._filePath)) {
+      try {
+        const todosParsed = JSON.parse(
+          fs.readFileSync(this._filePath, { encoding: "utf-8" })
+        );
+        return todosParsed.map((todoData: any) => {
+          const { status, dateStart, _id: id, dateEnd, title } = todoData;
+          const todo: ITodo = new Todo(title, dateStart, dateEnd, status, id);
+          return todo;
+        });
+      } catch (err) {
+        console.log("Error loading todos:", err);
+        return [];
       }
-      else{ 
-        return false
-      }
-     }
-    
-
-  static loadTodos():ITodo[]   { 
-    if(this.isExistingFile(this._filePath)){ 
-      try{ 
-    const todosJson = fs.readFileSync(this._filePath, { encoding: "utf-8" });
-    const todosParsed:ITodo[] = JSON.parse(todosJson);
-    const todos = todosParsed.map((todo) => { 
-      return Object.assign(new Todo() , todo)
-    })
-    return todos
+    } else {
+      console.log("Error loading todos:");
+      return [];
     }
-    catch(err){ 
-        return []
-    }
-    }
-    else{ 
-     return []
-    }
-    
   }
 
-
-  static saveTodos(todos:ITodo[]) {
-  console.log(todos)
-    fs.writeFile(this._filePath, JSON.stringify(todos), (err:Error) => {
-  if (err) {
-    console.error('An error occurred while writing to the file:', err);
-  } else {
-    console.log('File updated successfully!');
-   UserInputHandler.close()
+  static saveTodos(todos: ITodo[]) {
+    try {
+      fs.writeFileSync(this._filePath, JSON.stringify(todos));
+      console.log("\nJSON file updated successfully!");
+    } catch (err) {
+      console.error("\nAn error occurred while writing to the file:", err);
+    }
   }
-    });
-    
-  }
-
-}
-
-
+};
