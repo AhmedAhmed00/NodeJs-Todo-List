@@ -16,17 +16,18 @@ module.exports = class FileManager {
         const todosParsed = JSON.parse(
           fs.readFileSync(this._filePath, { encoding: "utf-8" })
         );
+
         return todosParsed.map((todoData: any) => {
           const { status, dateStart, _id: id, dateEnd, title } = todoData;
-          const todo: ITodo = new Todo(title, dateStart, dateEnd, status, id);
-          return todo;
+
+          return new Todo(title, dateStart, dateEnd, status, id);
         });
       } catch (err) {
-        console.log("Error loading todos:", err);
+        console.log("Your To-do list is empty", err);
         return [];
       }
     } else {
-      console.log("Error loading todos:");
+      console.log("file does not exist");
       return [];
     }
   }

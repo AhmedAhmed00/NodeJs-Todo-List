@@ -1,3 +1,5 @@
+const UserInputHandler = require("./user-input-handler");
+
 type statusType = "not-started" | "in-progress" | "completed";
 
 export interface ITodo {
@@ -7,10 +9,10 @@ export interface ITodo {
   dateEnd?: number;
   status: statusType;
   getTodo: () => object;
+  chooseStatus: () => Promise<void>;
 }
 
 module.exports = class Todo implements ITodo {
-  static idCounter = 1;
   #_id: number;
   #dateStart: number;
   #dateEnd: number;
@@ -63,6 +65,27 @@ module.exports = class Todo implements ITodo {
 
   set dateEnd(date: number) {
     this.#dateEnd = date;
+  }
+
+  async chooseStatus(): Promise<void> {
+    let chosenStatus = await UserInputHandler.question(
+      "Task Status : \n1 - Not Started\n2 - In Progress\n3 - Completed\n "
+    );
+    switch (chosenStatus) {
+      case "1":
+        this.#status = "not-started";
+        break;
+      case "2":
+        this.#status = "in-progress";
+        break;
+      case "3":
+        this.#status = "completed";
+        break;
+      default:
+        console.log("Invalid status choice, please choose 1, 2, or 3");
+        await this.chooseStatus();
+        break;
+    }
   }
 
   get dateEnd(): number {
